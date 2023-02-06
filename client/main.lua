@@ -151,11 +151,17 @@ function OpenLicenceMenu(shop)
 	ESX.OpenContext("right", elements, function(menu,element)
 		local elements2 = {
 			{unselectable = true, icon = "fas fa-ship", title = element.title},
-			{icon = "fas fa-check-double", title = TranslateCap('license_buy_yes'), val = "yes"},
+			{icon = "fas fa-check-double", title = TranslateCap('license_buy_yes', Config.LicensePrice), val = "yes"},
 			{icon = "fas fa-window-close", title = TranslateCap('license_buy_no'), val = "no"}
 		}
 
 		ESX.OpenContext("right", elements2, function(menu2,element2)
+			-- If the value is no, close the menu and stop the script. 
+			if element2.val == "no" then
+                ESX.CloseContext()
+                return;
+            end
+
 			ESX.TriggerServerCallback('esx_boat:buyBoatLicense', function (boughtLicense)
 				if boughtLicense then
 					ESX.ShowNotification(TranslateCap('license_bought', ESX.Math.GroupDigits(Config.LicensePrice)))
