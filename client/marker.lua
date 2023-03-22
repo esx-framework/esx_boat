@@ -34,6 +34,7 @@ CreateThread(function()
 				end
 
 				CurrentAction = nil
+				ESX.HideUI()
 			end
 		else
 			Wait(500)
@@ -64,6 +65,7 @@ AddEventHandler('esx_boat:hasEnteredMarker', function(zone, zoneNum)
 			end
 		end
 	end
+	ESX.ShowUI(CurrentActionMsg)
 end)
 
 AddEventHandler('esx_boat:hasExitedMarker', function()
@@ -72,6 +74,7 @@ AddEventHandler('esx_boat:hasExitedMarker', function()
 	end
 
 	CurrentAction = nil
+	ESX.HideUI()
 end)
 
 -- Enter / Exit marker events
