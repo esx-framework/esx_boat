@@ -65,7 +65,7 @@ AddEventHandler('esx_boat:hasEnteredMarker', function(zone, zoneNum)
 			end
 		end
 	end
-	ESX.ShowUI(CurrentActionMsg)
+	ESX.TextUI(CurrentActionMsg)
 end)
 
 AddEventHandler('esx_boat:hasExitedMarker', function()
