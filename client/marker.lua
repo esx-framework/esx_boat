@@ -11,8 +11,6 @@ CreateThread(function()
 		Wait(0)
 
 		if CurrentAction then
-			ESX.ShowHelpNotification(CurrentActionMsg)
-
 			if IsControlJustReleased(0, 38) then
 				if CurrentAction == 'boat_shop' then
 					if not Config.LicenseEnable then
