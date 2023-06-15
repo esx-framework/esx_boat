@@ -11,8 +11,6 @@ CreateThread(function()
 		Wait(0)
 
 		if CurrentAction then
-			ESX.ShowHelpNotification(CurrentActionMsg)
-
 			if IsControlJustReleased(0, 38) then
 				if CurrentAction == 'boat_shop' then
 					if not Config.LicenseEnable then
@@ -34,6 +32,7 @@ CreateThread(function()
 				end
 
 				CurrentAction = nil
+				ESX.HideUI()
 			end
 		else
 			Wait(500)
@@ -64,6 +63,7 @@ AddEventHandler('esx_boat:hasEnteredMarker', function(zone, zoneNum)
 			end
 		end
 	end
+	ESX.TextUI(CurrentActionMsg)
 end)
 
 AddEventHandler('esx_boat:hasExitedMarker', function()
@@ -72,6 +72,7 @@ AddEventHandler('esx_boat:hasExitedMarker', function()
 	end
 
 	CurrentAction = nil
+	ESX.HideUI()
 end)
 
 -- Enter / Exit marker events
