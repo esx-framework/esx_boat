@@ -68,7 +68,6 @@ function OpenBoatShop(shop)
 									SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z)
 								else
 									ESX.ShowNotification(TranslateCap('boat_shop_nomoney'))
-									ESX.CloseContext()
 								end
 							end, props)
 						elseif element3.value == "stop" then
