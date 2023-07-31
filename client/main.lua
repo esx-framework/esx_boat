@@ -71,17 +71,10 @@ function OpenBoatShop(shop)
 								end
 							end, props)
 						elseif element3.value == "stop" then
-							isInShopMenu = false
-							DeleteSpawnedVehicles()
-
-							CurrentAction    = 'boat_shop'
-							CurrentActionMsg = TranslateCap('boat_shop_open')
-
-							FreezeEntityPosition(playerPed, false)
-							SetEntityVisible(playerPed, true)
-							SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z)
-							ESX.CloseContext()
+							reset(shop)
 						end
+					end, function ()
+						reset(shop)
 					end)
 				end)
 			end
@@ -216,7 +209,9 @@ end)
 function DeleteSpawnedVehicles()
 	while #spawnedVehicles > 0 do
 		local vehicle = spawnedVehicles[1]
-		ESX.Game.DeleteVehicle(vehicle)
+		if DoesEntityExist(vehicle) then
+			ESX.Game.DeleteVehicle(vehicle)
+		end
 		table.remove(spawnedVehicles, 1)
 	end
 end
@@ -231,4 +226,16 @@ function getVehicleLabelFromHash(hash)
 	end
 
 	return 'Unknown model [' .. model .. ']'
+end
+
+function reset(shop)
+	local playerPed = PlayerPedId()
+	isInShopMenu = false
+	CurrentAction    = 'boat_shop'
+	CurrentActionMsg = TranslateCap('boat_shop_open')
+	DeleteSpawnedVehicles()
+	FreezeEntityPosition(playerPed, false)
+	SetEntityVisible(playerPed, true)
+	SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z)
+	ESX.CloseContext()
 end
