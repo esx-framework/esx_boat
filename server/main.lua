@@ -1,7 +1,3 @@
-MySQL.ready(function()
-	ParkBoats()
-end)
-
 function ParkBoats()
 	MySQL.update('UPDATE owned_vehicles SET `stored` = true WHERE `stored` = false AND type = @type', {
 		['@type'] = 'boat'
@@ -11,6 +7,10 @@ function ParkBoats()
 		end
 	end)
 end
+
+MySQL.ready(function()
+	ParkBoats()
+end)
 
 ESX.RegisterServerCallback('esx_boat:buyBoat', function(source, cb, vehicleProps)
 	local xPlayer = ESX.GetPlayerFromId(source)
