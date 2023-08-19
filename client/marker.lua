@@ -10,33 +10,37 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-		if CurrentAction then
-			if IsControlJustReleased(0, 38) then
-				if CurrentAction == 'boat_shop' then
-					if not Config.LicenseEnable then
-						OpenBoatShop(Config.Zones.BoatShops[CurrentActionData.zoneNum])
-					else -- check for license
+    if not CurrentAction then
+      Wait(500)
+      goto continue;
+    end
 
-						ESX.TriggerServerCallback('esx_license:checkLicense', function(hasBoatLicense)
-							if hasBoatLicense then
-								OpenBoatShop(Config.Zones.BoatShops[CurrentActionData.zoneNum])
-							else
-								OpenLicenceMenu(Config.Zones.BoatShops[CurrentActionData.zoneNum])
-							end
-						end, GetPlayerServerId(PlayerId()), 'boat')
-					end
-				elseif CurrentAction == 'garage_out' then
-					OpenBoatGarage(Config.Zones.Garages[CurrentActionData.zoneNum])
-				elseif CurrentAction == 'garage_in' then
-					StoreBoatInGarage(CurrentActionData.vehicle, Config.Zones.Garages[CurrentActionData.zoneNum].StoreTP)
-				end
+    if not IsControlJustReleased(0, 38) then
+      goto continue;
+    end
 
-				CurrentAction = nil
-				ESX.HideUI()
-			end
-		else
-			Wait(500)
-		end
+    if CurrentAction == 'boat_shop' then
+      if not Config.LicenseEnable then
+        OpenBoatShop(Config.Zones.BoatShops[CurrentActionData.zoneNum])
+      else -- check for license
+        ESX.TriggerServerCallback('esx_license:checkLicense', function(hasBoatLicense)
+          if hasBoatLicense then
+            OpenBoatShop(Config.Zones.BoatShops[CurrentActionData.zoneNum])
+          else
+            OpenLicenceMenu(Config.Zones.BoatShops[CurrentActionData.zoneNum])
+          end
+        end, GetPlayerServerId(PlayerId()), 'boat')
+      end
+    elseif CurrentAction == 'garage_out' then
+      OpenBoatGarage(Config.Zones.Garages[CurrentActionData.zoneNum])
+    elseif CurrentAction == 'garage_in' then
+      StoreBoatInGarage(CurrentActionData.vehicle, Config.Zones.Garages[CurrentActionData.zoneNum].StoreTP)
+    end
+
+    CurrentAction = nil
+    ESX.HideUI()
+
+    ::continue::
 	end
 end)
 
@@ -51,23 +55,27 @@ AddEventHandler('esx_boat:hasEnteredMarker', function(zone, zoneNum)
 		CurrentActionData = { zoneNum = zoneNum }
 	elseif zone == 'garage_in' then
 		local playerPed = PlayerPedId()
-		local coords    = GetEntityCoords(playerPed)
-	
-		if IsPedInAnyVehicle(playerPed, false) then
-			local vehicle = GetVehiclePedIsIn(playerPed, false)
-	
-			if DoesEntityExist(vehicle) and GetPedInVehicleSeat(vehicle, -1) == playerPed then
-				CurrentAction     = 'garage_in'
-				CurrentActionMsg  = TranslateCap('garage_store')
-				CurrentActionData = { vehicle = vehicle, zoneNum = zoneNum }
-			end
+
+		if not IsPedInAnyVehicle(playerPed, false) then
+      return;
 		end
+
+		local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+    if not DoesEntityExist(vehicle) or not GetPedInVehicleSeat(vehicle, -1) == playerPed then
+      return;
+    end
+
+    CurrentAction     = 'garage_in'
+    CurrentActionMsg  = TranslateCap('garage_store')
+    CurrentActionData = { vehicle = vehicle, zoneNum = zoneNum }
 	end
+
 	ESX.TextUI(CurrentActionMsg)
 end)
 
 AddEventHandler('esx_boat:hasExitedMarker', function()
-	if not isInShopMenu then
+	if not IsShopMenuActive then
 		ESX.CloseContext()
 	end
 
@@ -185,7 +193,7 @@ CreateThread(function()
 end)
 
 function CreateBlip(coords, text, sprite, color, scale)
-	local blip = AddBlipForCoord(coords.x, coords.y)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
 
 	SetBlipSprite(blip, sprite)
 	SetBlipScale(blip, scale)

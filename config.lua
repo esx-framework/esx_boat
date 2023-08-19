@@ -87,6 +87,10 @@ Config.Vehicles = {
 	{model = 'submersible', label = 'Submersible', price = 750000}
 }
 
+Config.HandleExploitation = function(source)
+  print(('[^2INFO^7] Player ^5%s^7 Attempted To Exploit Garage'):format(source))
+end
+
 exports('getGarages', function()
 	return Config.Zones.Garages
 end)
