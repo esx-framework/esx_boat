@@ -196,8 +196,7 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-    local VEH_EXIT_CONTROL = 75;
-
+    local VEH_EXIT_CONTROL = 75
 		if IsShopMenuActive then
 			DisableControlAction(0, VEH_EXIT_CONTROL, true)  -- Disable exit vehicle
 			DisableControlAction(27, VEH_EXIT_CONTROL, true) -- Disable exit vehicle

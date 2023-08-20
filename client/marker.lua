@@ -12,11 +12,11 @@ CreateThread(function()
 
     if not CurrentAction then
       Wait(500)
-      goto continue;
+      goto continue
     end
 
     if not IsControlJustReleased(0, 38) then
-      goto continue;
+      goto continue
     end
 
     if CurrentAction == 'boat_shop' then
@@ -57,13 +57,12 @@ AddEventHandler('esx_boat:hasEnteredMarker', function(zone, zoneNum)
 		local playerPed = PlayerPedId()
 
 		if not IsPedInAnyVehicle(playerPed, false) then
-      return;
+      return
 		end
 
 		local vehicle = GetVehiclePedIsIn(playerPed, false)
-
     if not DoesEntityExist(vehicle) or not GetPedInVehicleSeat(vehicle, -1) == playerPed then
-      return;
+      return
     end
 
     CurrentAction     = 'garage_in'
