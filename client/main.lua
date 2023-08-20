@@ -1,8 +1,8 @@
-isInShopMenu = false
+IsShopMenuActive = false
 local spawnedVehicles = {}
 
 function OpenBoatShop(shop)
-	isInShopMenu = true
+	IsShopMenuActive = true
 
 	local playerPed = PlayerPedId()
 	local elements  = {
@@ -57,34 +57,34 @@ function OpenBoatShop(shop)
 									ESX.ShowNotification(TranslateCap('boat_shop_bought', element.name, ESX.Math.GroupDigits(element.price)))
 
 									DeleteSpawnedVehicles()
-									isInShopMenu = false
+									IsShopMenuActive = false
 									ESX.CloseContext()
 
 									CurrentAction    = 'boat_shop'
 									CurrentActionMsg = TranslateCap('boat_shop_open')
 
 									FreezeEntityPosition(playerPed, false)
-									SetEntityVisible(playerPed, true)
-									SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z)
+									SetEntityVisible(playerPed, true, false)
+									SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z, false, false, false, false)
 								else
 									ESX.ShowNotification(TranslateCap('boat_shop_nomoney'))
 								end
 							end, props)
 						elseif element3.value == "stop" then
-							reset(shop)
+							ResetCurrentState(shop)
 						end
 					end, function ()
-						reset(shop)
+						ResetCurrentState(shop)
 					end)
 				end)
 			end
 		end, function(menu)
-			isInShopMenu = false
+			IsShopMenuActive = false
 			CurrentAction    = 'boat_shop'
 			CurrentActionMsg = TranslateCap('boat_shop_open')
 		end)
 	end, function(menu)
-		isInShopMenu = false
+		IsShopMenuActive = false
 		CurrentAction    = 'boat_shop'
 		CurrentActionMsg = TranslateCap('boat_shop_open')
 	end)
@@ -104,7 +104,7 @@ function OpenBoatGarage(garage)
 
 				elements[#elements+1] = {
 					icon = "fas fa-ship",
-					title = getVehicleLabelFromHash(ownedBoats[i].model),
+					title = GetVehicleLabelFromHash(ownedBoats[i].model),
 					vehicleProps = ownedBoats[i]
 				}
 			end
@@ -150,9 +150,8 @@ function OpenLicenceMenu(shop)
 		ESX.OpenContext("right", elements2, function(menu2,element2)
 			-- If the value is no, close the menu and stop the script. 
 			if element2.val == "no" then
-                ESX.CloseContext()
-                return;
-            end
+        return ESX.CloseContext();
+      end
 
 			ESX.TriggerServerCallback('esx_boat:buyBoatLicense', function (boughtLicense)
 				if boughtLicense then
@@ -178,7 +177,7 @@ function StoreBoatInGarage(vehicle, teleportCoords)
 	local vehicleProps = ESX.Game.GetVehicleProperties(vehicle)
 
 	ESX.TriggerServerCallback('esx_boat:storeVehicle', function (rowsChanged)
-		if rowsChanged > 0 then
+		if rowsChanged then
 			ESX.Game.DeleteVehicle(vehicle)
 			ESX.ShowNotification(TranslateCap('garage_stored'))
 			local playerPed = PlayerPedId()
@@ -197,9 +196,10 @@ CreateThread(function()
 	while true do
 		Wait(0)
 
-		if isInShopMenu then
-			DisableControlAction(0, 75, true)  -- Disable exit vehicle
-			DisableControlAction(27, 75, true) -- Disable exit vehicle
+    local VEH_EXIT_CONTROL = 75
+		if IsShopMenuActive then
+			DisableControlAction(0, VEH_EXIT_CONTROL, true)  -- Disable exit vehicle
+			DisableControlAction(27, VEH_EXIT_CONTROL, true) -- Disable exit vehicle
 		else
 			Wait(500)
 		end
@@ -216,7 +216,7 @@ function DeleteSpawnedVehicles()
 	end
 end
 
-function getVehicleLabelFromHash(hash)
+function GetVehicleLabelFromHash(hash)
 	local model = string.lower(GetDisplayNameFromVehicleModel(hash))
 
 	for i=1, #Config.Vehicles, 1 do
@@ -228,14 +228,14 @@ function getVehicleLabelFromHash(hash)
 	return 'Unknown model [' .. model .. ']'
 end
 
-function reset(shop)
+function ResetCurrentState(shop)
 	local playerPed = PlayerPedId()
-	isInShopMenu = false
+	IsShopMenuActive = false
 	CurrentAction    = 'boat_shop'
 	CurrentActionMsg = TranslateCap('boat_shop_open')
 	DeleteSpawnedVehicles()
 	FreezeEntityPosition(playerPed, false)
-	SetEntityVisible(playerPed, true)
-	SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z)
+	SetEntityVisible(playerPed, true, false)
+	SetEntityCoords(playerPed, shop.Outside.x, shop.Outside.y, shop.Outside.z, false, false, false, false)
 	ESX.CloseContext()
 end
