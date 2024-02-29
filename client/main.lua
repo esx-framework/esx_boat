@@ -216,11 +216,11 @@ function DeleteSpawnedVehicles()
 	end
 end
 
-function getVehicleLabelFromHash(hash)
-	local model = string.lower(GetDisplayNameFromVehicleModel(hash))
-
+function getVehicleLabelFromHash(modelHash)
+	local model = string.lower(GetDisplayNameFromVehicleModel(modelHash))
+	
 	for i=1, #Config.Vehicles, 1 do
-		if Config.Vehicles[i].model == model then
+		if joaat(Config.Vehicles[i].model) == modelHash then
 			return Config.Vehicles[i].label
 		end
 	end
